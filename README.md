@@ -206,6 +206,7 @@ compiled output:
 		printf("%c",c);
 ```
 compiled output:
+
 ```c
 	//while loops
 	while (7 == 7) {
