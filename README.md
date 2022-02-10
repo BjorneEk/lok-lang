@@ -3,7 +3,14 @@
 a plan for a "programing language" that compiles to c code.
 
 
-the purpouse of the language is to modernize the syntax and make it more uniform as well as extend it with a few features that makes the code both more consise and more verbose at the same time. The most important of these features is the ability to overload functions.
+the purpouse of the language is to modernize the syntax and make it more uniform as well as extend it with a few features that makes the code both more consise and more verbose at the same time.
+
+### Features
+
+ - **function overloading** aswell as operator overloading for structs
+ - **namespaces** ability to bundle functionality in namespaces and include where necessary
+ - **type parameters** type paramenters for structs aswell as namespaces (syntax has yet to be written)
+ - **lambda expressions**
 
 ---
 
@@ -85,56 +92,6 @@ compiler output
 	};
 
 	struct byteColor green = {.red = b000, .green = b111, .blue = 0};
-```
- - **Advanced structs**
-
-more class like struct functionality<br>
-syntax:
-
-```javascript
-	struct vec2d[T]:
-
-		var x : T;
-		var y : T;
-
-		constructor(x, y);
-
-		overload:
-			def +(v : vec2d[T]) : vec2d[T] = return vec2d[T](x + v.x, y + v.y);
-
-			def +(v : *vec2d[T]) : vec2d[T] = return vec2d[T](x + v->x, y + v->y);
-
-			def +(s : T) : vec2d[T] = return vec2d[T](x + s, y + s);
-
-	var v1 : vec2d[float](2.0, 1.0) // equal to var v1 : vec2d[float] = (2.0, 1.0)
-	var v2 : vec2d[float](-1.0, 3.0)
-
-	var v3 : vec2d[float] = v1 + v2; // vec2d{x = 1.0, y = 4.0}
-```
-compiler output
-
-```c
-	struct vec2d_float {
-		float x;
-		float y;
-	};
-
-	struct vec2d_float vec2d_float_overloadABJEGV(struct vec2d_float * vec2d_float_name, struct vec2d_float v) {
-		return (struct vec2d_float){vec2d_float_name->x + v.x, vec2d_float_name->y + v.y};
-	}
-
-	struct vec2d_float vec2d_float_overloadHGGEQO(struct vec2d_float * vec2d_float_name, struct * vec2d_float v) {
-		return (struct vec2d_float){vec2d_float_name->x + v->x, vec2d_float_name->y + v->y};
-	}
-
-	struct vec2d_float vec2d_float_overloadABJEGV(struct vec2d_float * vec2d_float_name, float s) {
-		return (struct vec2d_float){vec2d_float_name->x + s, vec2d_float_name->y + s};
-	}
-
-	struct vec2d_float v1 = (vec2d_float){.x = 2.0, .y = 1.0};
-	struct vec2d_float v2 = (vec2d_float){.x = -1.0, .y = 3.0};
-
-	struct vec2d_float v3 = vec2d_float_overloadABJEGV(&v1, v2);
 ```
 
 ## controll structures
@@ -311,4 +268,184 @@ compiled output:
 		}
 		return res;
 	}
+```
+## New syntax and features
+
+ - **namespaces** <br>
+	- **syntax:** <span style="color:rgb(154, 204, 251)">`def`</span><span style="color:rgb(117, 225,231)">`<name>`</span>`:`<span style="color:rgb(99, 197, 253)">`namespace`</span>`[`<span style="color:rgb(224, 124, 142)">`T`</span>`] =`
+	- T is the type parameter, if a namespace needs multiple type parameters `[T][G][B]`or `[T, G, B]`<br>
+		syntax may be used
+ - **struct constructor** <br>
+	- **syntax:** <span style="color:rgb(117, 225, 231)">`constructor`</span>`(p1, p2 .. pn)`
+	- parameters should be names of struct members, members that are not included in the constructor
+	can be given a default initialization value by declaring it with one in the struct.
+ - **operator overloading** <br>
+	- **syntax:**<span style="color:rgb(154, 204, 251)">`operator`</span><span style="color:rgb(180, 48, 102)">`<rules>`</span><span style="color:rgb(99, 197, 253)">`<operator>`</span>`( p :`<span style="color:rgb(154, 204, 251)">`param`</span>`) : <`<span style="color:rgb(154, 204, 251)">`return type`</span>`> =`
+	- **rules** the rules for a operator overloading functions have two functions, to specify whether or not the struct instance it is applied to
+		has to be a pointer to an instance or an instance, aswell as the operations comutativity.
+		- **syntax:** <span style="color:rgb(216, 142, 79)">`#==>`</span> the first token `#` specifies the
+
+ - **Advanced structs and namespaces**
+
+more class like struct functionality<br>
+syntax:
+
+```c++
+	/**
+	 *   advanced struct with a type parameter 'T'.
+	 *
+	 *   'constructor()' contains the names inside the struct
+	 *   that cunstruction sould initialize
+	 *
+	 *   'operator' specifiec operator overloading defenition.
+	 *   '==>' '<=>' '<==' comutativity specifiers defines
+	 *   if both a + b and b + a should work, only available
+	 *   when input isnt of the struct type
+ 	 *
+	 **/
+	def vector : namespace =
+
+		struct vec2d[T]:
+
+			var x : T;
+			var y : T;
+
+			constructor(x, y);
+
+			operator <=> +(v : vec2d[T]) : vec2d[T] = return vec2d[T](x + v.x, y + v.y);
+
+			operator <=> +(v : *vec2d[T]) : vec2d[T] = return vec2d[T](x + v->x, y + v->y);
+
+			operator ==> +(s : T) : vec2d[T] = return vec2d[T](x + s, y + s);
+
+			operator ==> -(s : T) : vec2d[T] = return vec2d[T](x - s, y - s);
+
+	include vector;
+
+	var v1 : vec2d[float] = vec2d[float](2.0, 1.0) // equal to var v1 : vec2d[float] = (2.0, 1.0)
+	var v2 : vec2d[float](-1.0, 3.0) // calling constructor directly also works
+
+	var v3 : vec2d[float] = v1 + v2; // vec2d{x = 1.0, y = 4.0}
+
+	// alternativly
+
+	include vector as v;
+
+	var v1 : v.vec2d[float] = v.vec2d[float](2.0, 1.0)
+	var v2 : v.vec2d[float](-1.0, 3.0)
+
+	var v3 : v.vec2d[float] = v1 + v2;
+
+	// alternativly
+
+	include vector.{vec2d[float] as fvec}
+
+	var v1 : fvec = fvec(2.0, 1.0)
+	var v2 : fvec(-1.0, 3.0)
+
+	var v3 : fvec[float] = v1 + v2;
+```
+compiler output
+
+```c
+	struct vec2d_float {
+		float x;
+		float y;
+	};
+
+	struct vec2d_float vec2d_float_overloadABJEGV(struct vec2d_float * vec2d_float_name, struct vec2d_float v) {
+		return (struct vec2d_float){vec2d_float_name->x + v.x, vec2d_float_name->y + v.y};
+	}
+
+	struct vec2d_float vec2d_float_overloadHGGEQO(struct vec2d_float * vec2d_float_name, struct * vec2d_float v) {
+		return (struct vec2d_float){vec2d_float_name->x + v->x, vec2d_float_name->y + v->y};
+	}
+
+	struct vec2d_float vec2d_float_overloadABJEGV(struct vec2d_float * vec2d_float_name, float s) {
+		return (struct vec2d_float){vec2d_float_name->x + s, vec2d_float_name->y + s};
+	}
+
+	struct vec2d_float v1 = (vec2d_float){.x = 2.0, .y = 1.0};
+	struct vec2d_float v2 = (vec2d_float){.x = -1.0, .y = 3.0};
+
+	struct vec2d_float v3 = vec2d_float_overloadABJEGV(&v1, v2);
+```
+
+ - **type parameter namespaces**
+
+```c
+	def linkedList : namespace[T] =
+
+		/**
+		 *  struct node has no type parameter but
+		 *  instead relies on the namespace type parameter
+		 *
+		 *  the syntax 'var next  : *T = NULL' means that when
+		 *  a constructor is called and next is not initialized by it
+		 *  next should default to 'NULL' in this case
+		 **/
+		struct node:
+
+			var value : T
+			var next  : *T = NULL
+
+			constructor(value)
+
+			/**
+			 *   recursive append function
+			 *
+			 *   '&constructor()' syntax enables direct pointer
+			 *    declaration with allocation
+			 **/
+			operator ==> +=(val : T) : void =
+				if ( next == NULL ): next = &node(val)
+				else: next += val
+
+			operator +=(list : *node) : void =
+				if ( next == NULL ): next = list
+				else: next += list
+
+			/**
+			 *  list pointer incrementation function
+			 *  '&==>' or & before comutativity  setting enforces that
+			 *  self is a pointer to an instance of the struct, '#==>' would
+			 *  do the oposite and prevent function call if self was a pointer.
+			 **/
+
+			operator &==> ++(void) : void =
+				if(self != NULL): self = next;
+
+			operator &==> >>(idx : u32) : *node =
+				if (idx < 1) return self
+				var res : *node = next
+				var i : u32
+				for(i = 0; i < (idx-1); i++, res++)
+				return res
+
+
+		func printList(list : *node) : void =
+			for(var e : *node = list; e != NULL; e++):
+				printf("[%(T)]->", e->value)
+
+```
+```c
+
+	import linkedList[i32] as intList
+	rename intList.node as intNode
+
+	func main( argc : i32, const argv[] : *char) : i32 =
+		var head : &intNode(0) /**
+                              * same as:
+                              * var head : *intNode = malloc(sizeof(intNode))
+                              * head->next = NULL;
+                              * head->value = 0;
+                              **/
+		for(i <- 1:10): head += i
+		intList.printList(head)
+```
+
+**output:**
+
+```shell
+[0]->[1]->[2]->[3]->[4]->[5]->[6]->[7]->[8]->[9]->
 ```

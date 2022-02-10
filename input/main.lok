@@ -1,0 +1,19 @@
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct byteColor:
+	union:
+		var byterep : u8;
+		struct:
+			var red   : [3]
+			var green : [3]
+			var blue  : [2]
+
+
+def main( argc : i32, const argv[] : *char) : i32 =
+
+	var green : byteColor = {.red = b000, .green = b111, .blue = 0};
+
+	printf("Hello, lok-lang");
