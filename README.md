@@ -283,7 +283,24 @@ compiled output:
 	- **syntax:**<span style="color:rgb(154, 204, 251)">`operator`</span><span style="color:rgb(180, 48, 102)">`<rules>`</span><span style="color:rgb(99, 197, 253)">`<operator>`</span>`( p :`<span style="color:rgb(154, 204, 251)">`param`</span>`) : <`<span style="color:rgb(154, 204, 251)">`return type`</span>`> =`
 	- **rules** the rules for a operator overloading functions have two functions, to specify whether or not the struct instance it is applied to
 		has to be a pointer to an instance or an instance, aswell as the operations comutativity.
-		- **syntax:** <span style="color:rgb(216, 142, 79)">`#==>`</span> the first token `#` specifies the
+		- **syntax:** <span style="color:rgb(216, 142, 79)">`#==>`</span> the first token `#` specifies that the variable must be a instance, not having any token there
+		means that it does not matter and a `&` sign means it must be a reference/pointer. <br>
+		the second part `==>` specifies the operations comutativity.
+
+
+
+| **syntax**   | a + b   | b + a   | &a + b   | b + &a   |
+|--------------|:-------:|:-------:|:--------:|---------:|
+|              | valid   | valid   | valid    | valid    |
+|  <span style="color:rgb(216, 142, 79)">`==>`</span>         | valid   |         | valid    |          |
+|  <span style="color:rgb(216, 142, 79)">`<==`</span>         |         | valid   |          | valid    |
+|  <span style="color:rgb(216, 142, 79)">`<=>`</span>         | valid   | valid   | valid    | valid    |
+| <span style="color:rgb(216, 142, 79)">`#==>`</span>         | valid   |         |          |          |
+| <span style="color:rgb(216, 142, 79)">`#<==`</span>        |         | valid   |          |          |
+| <span style="color:rgb(216, 142, 79)">`#<=>`</span>         | valid   | valid   |          |          |
+| <span style="color:rgb(216, 142, 79)">`&==>`</span>         |         |         | valid    |          |
+| <span style="color:rgb(216, 142, 79)">`&<==`</span>         |         |         |          | valid    |
+| <span style="color:rgb(216, 142, 79)">`&<=>`</span>         |         |         | valid    | valid    |
 
  - **Advanced structs and namespaces**
 
