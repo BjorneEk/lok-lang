@@ -1,0 +1,18 @@
+
+
+def vector : namespace =
+
+	struct vec2d[T]:
+
+		var x : T;
+		var y : T;
+
+		constructor(x, y);
+
+		operator <=> +(v : vec2d[T]) : vec2d[T] = return vec2d[T](x + v.x, y + v.y);
+
+		operator <=> +(v : *vec2d[T]) : vec2d[T] = return vec2d[T](x + v->x, y + v->y);
+
+		operator ==> +(s : T) : vec2d[T] = return vec2d[T](x + s, y + s);
+
+		operator ==> -(s : T) : vec2d[T] = return vec2d[T](x - s, y - s);

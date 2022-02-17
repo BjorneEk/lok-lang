@@ -1,0 +1,34 @@
+
+def fvecList : namespace =
+
+	import vector.vec2d[float] as fvec2d
+
+	struct fvecNode:
+
+		var value : fvec2d
+		var next  : *fvec2d = NULL
+
+		constructor(value)
+
+		operator ==> +=(val : fvec2d) : void =
+			if ( next == NULL ): next = &fvecNode(val)
+			else: next += val
+
+		operator +=(list : *fvecNode) : void =
+			if ( next == NULL ): next = list
+			else: next += list
+
+		operator &==> ++(void) : void =
+			if(self != NULL): self = next;
+
+		operator &==> >>(idx : u32) : *fvecNode =
+			if (idx < 1) return self
+			var res : *fvecNode = next
+			var i : u32
+			for(i = 0; i < (idx-1); i++, res++)
+			return res
+
+
+	func printList(list : *fvecNode) : void =
+		for(var e : *fvecNode = list; e != NULL; e++):
+			printf("[%f, %f]->", e->value.x, e->value.y)

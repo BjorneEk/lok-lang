@@ -1,19 +1,26 @@
 
-
 #include <stdio.h>
 #include <stdlib.h>
 
-struct byteColor:
-	union:
-		var byterep : u8;
-		struct:
-			var red   : [3]
-			var green : [3]
-			var blue  : [2]
+def main : namespace =
 
 
-def main( argc : i32, const argv[] : *char) : i32 =
+	import vector.vec2d[float] as fvec
+	import fvecList.{as list, .fvecNode as node}
 
-	var green : byteColor = {.red = b000, .green = b111, .blue = 0};
 
-	printf("Hello, lok-lang");
+	func initList() : node =
+		var head : &node(fvec(2.0, 1.0))
+
+		for(i <- 1:10):
+			head += fvec(1.0 * i, 1.5 * i)
+
+		return head
+
+	func main(argc : i32, const argv[] : *char) : i32 =
+
+		var list : node = initList()
+
+		printf("Hello, lok-lang")
+
+		list.printlist(node)

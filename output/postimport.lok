@@ -1,0 +1,66 @@
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct fvec:
+
+	var x : float;
+	var y : float;
+
+	constructor(x, y);
+
+	operator <=> +(v : fvec) : fvec = return fvec(x + v.x, y + v.y);
+
+	operator <=> +(v : *fvec) : fvec = return fvec(x + v->x, y + v->y);
+
+	operator ==> +(s : float) : fvec = return fvec(x + s, y + s);
+
+	operator ==> -(s : float) : fvec = return fvec(x - s, y - s);
+
+struct node:
+
+	var value : fvec
+	var next  : *fvec = NULL
+
+	constructor(value)
+
+	operator &==> +=(val : fvec) : void =
+		if ( next == NULL ): next = &node(val)
+		else: next += val
+
+	operator &==> +=(list : *node) : void =
+		if ( next == NULL ): next = list
+		else: next += list
+
+	operator &==> ++(void) : void =
+		if(self != NULL): self = next;
+
+	operator &==> >>(idx : u32) : *node =
+		if (idx < 1) return self
+		var res : *node = next
+		var i : u32
+		for(i = 0; i < (idx-1); i++, res++)
+		return res
+
+
+func listprintList(l : *node) : void =
+	for(var e : *node = l; e != NULL; e++):
+		printf("[%f, %f]->", e->value.x, e->value.y)
+
+
+
+func initList() : node =
+	var head : &node(fvec(2.0, 1.0))
+
+	for(i <- 1:10):
+		head += fvec(1.0 * i, 1.5 * i)
+
+	return head
+
+func main(argc : i32, const argv[] : *char) : i32 =
+
+	var list : node = initList()
+
+	printf("Hello, lok-lang")
+	listprintList(node)

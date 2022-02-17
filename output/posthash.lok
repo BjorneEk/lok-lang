@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct fvec:
+
+	var x : float;
+	var y : float;
+
+func add_fvecHFiWDd(self_HAITY : fvec, v : fvecv : fvec) : fvec =
+	return (fvec){.x=(self_HAITY.x + v.x),.y=(self_HAITY.y + v.y)};
+
+func add_ptrfvecHAPGsO(self_HAITY : fvec, v : *fvec) : fvec =
+	return (fvec){.x=(self_HAITY.x + v->x),.y=(self_HAITY.y + v->y)};
+
+func add_float_cdirGSOuRn(self_HAITY : fvec, s : float) : fvec =
+	return (fvec){.x=(self_HAITY.x + s),.y=(self_HAITY.y + s);
+
+func sub_float_cdirYQKnFU(self_HAITY : fvec, s : float) : fvec =
+	return (fvec){.x=(self_HAITY.x - s),.y=(self_HAITY.y - s)};
+
+struct node:
+
+	var value : fvec
+	var next  : *fvec = NULL
+
+func appendptr_fvec_cdir_RAUIuG(self_BgISE : *node, val : fvec) : void =
+	if ( self_BgISE->next == NULL ):
+		var new_node_constructor_GAD : *node = malloc(sizeof(node))
+		new_node_constructor_GAD->value = val
+		new_node_constructor_GAD->next = NULL
+		self_BgISE->next = malloc(sizeof(node))
+	else:
+		appendptr_fvec_cdir_RAUIuG(self_BgISE->next, val)
+
+func appendptr_nodeptr_cdir_WAGyja(self_ADcg : *node, list : *node) : void =
+		if ( self_ADcg->next == NULL ): self_ADcg->next = list
+		else: appendptr_nodeptr_cdir_WAGyja(self_ADcg->next, list)
+
+func postincrptr_void_cdir_grtGW(self_wDBg : *node) : void =
+		if(self_wDBg != NULL): self_wDBg = self_wDBg->next;
+
+func rshiftptr_u32_cdir_POGLs(self_bgTY : *node, idx : u32) : *node =
+		if (idx < 1) return self_bgTY
+		var res : *node = self_bgTY->next
+		var i : u32
+		for(i = 0; i < (idx-1); i++, postincrptr_void_cdir_grtGW(res))
+		return res
+
+
+func listprintList_aGETBV(l : *node) : void =
+	for(var e : *node = l; e != NULL; postincrptr_void_cdir_grtGW(e)):
+		printf("[%f, %f]->", e->value.x, e->value.y)
+
+
+
+func initList() : node =
+	var head : *node = malloc(sizeof(node))
+	head->value = (fvec){.x=2.0, .y=1.0}
+	head->next = NULL
+
+	for(var i : i32 = 1; i <= 10; i++):
+		appendptr_fvec_cdir_RAUIuG(head, (fvec){.x=1.0 * i, .y=1.5 * i})
+
+	return head
+
+func main(argc : i32, const argv[] : *char) : i32 =
+
+	var list : node = initList()
+
+	printf("Hello, lok-lang")
+	listprintList_aGETBV(node)

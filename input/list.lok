@@ -1,0 +1,53 @@
+
+def linkedList : namespace[T] =
+
+	/**
+	 *  struct node has no type parameter but
+	 *  instead relies on the namespace type parameter
+	 *
+	 *  the syntax 'var next  : *T = NULL' means that when
+	 *  a constructor is called and next is not initialized by it
+	 *  next should default to 'NULL' in this case
+	 **/
+	struct node:
+
+		var value : T
+		var next  : *T = NULL
+
+		constructor(value)
+
+		/**
+		 *   recursive append function
+		 *
+		 *   '&constructor()' syntax enables direct pointer
+		 *    declaration with allocation
+		 **/
+		operator ==> +=(val : T) : void =
+			if ( next == NULL ): next = &node(val)
+			else: next += val
+
+		operator +=(list : *node) : void =
+			if ( next == NULL ): next = list
+			else: next += list
+
+		/**
+		 *  list pointer incrementation function
+		 *  '&==>' or & before comutativity  setting enforces that
+		 *  self is a pointer to an instance of the struct, '#==>' would
+		 *  do the oposite and prevent function call if self was a pointer.
+		 **/
+
+		operator &==> ++(void) : void =
+			if(self != NULL): self = next;
+
+		operator &==> >>(idx : u32) : *node =
+			if (idx < 1) return self
+			var res : *node = next
+			var i : u32
+			for(i = 0; i < (idx-1); i++, res++)
+			return res
+
+
+	func printList(list : *node) : void =
+		for(var e : *node = list; e != NULL; e++):
+			printf("[%(T)]->", e->value)
